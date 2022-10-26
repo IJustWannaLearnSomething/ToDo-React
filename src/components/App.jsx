@@ -1,42 +1,34 @@
 import React, { useState } from "react";
+import Heading from "./Heading";
+import InputArea from "./InputArea";
+import ToDoList from "./ToDoList";
 
 function App() {
-  const [listItemArray, setListItemArray] = useState([
-    { valueOfItem: "A Item.", id: 0 },
-  ]);
-  const [inputText, setInputText] = useState("");
+  const [listItemArray, setListItemArray] = useState([]);
 
-  function changeHandler(event) {
-    const value = event.target.value;
-    setInputText(value);
-  }
-
-  function clickHandler() {
+  function addItems(inputText) {
     setListItemArray((prevListItemArray) => [
       ...prevListItemArray,
-      { valueOfItem: inputText, id: prevListItemArray.length },
+      {
+        valueOfItem: inputText,
+        id: prevListItemArray.length
+          ? prevListItemArray[prevListItemArray.length - 1].id + 1
+          : 0,
+      },
     ]);
-    setInputText("");
+  }
+
+  function deleteItem(id) {
+    setListItemArray((prevListItemArray) => {
+      return prevListItemArray.filter((listItem) => listItem.id !== id);
+    });
   }
 
   return (
     <div className="container">
-      <div className="heading">
-        <h1>To-Do List</h1>
-      </div>
-      <div className="form">
-        <input onChange={changeHandler} type="text" value={inputText} />
-        <button onClick={clickHandler}>
-          <span>Add</span>
-        </button>
-      </div>
-      <div>
-        <ul>
-          {listItemArray.map((listItem) => (
-            <li key={listItem.id}>{listItem.valueOfItem}</li>
-          ))}
-        </ul>
-      </div>
+      <Heading />
+      <InputArea addItems={addItems} />
+      <ToDoList items={listItemArray} delete={deleteItem} />
     </div>
   );
 }
